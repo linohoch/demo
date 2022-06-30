@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layouts/layoutContents.html}">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        table.type-01 th { padding:4px 2px;}
+        table.type-01 th { background-color: #E6EFFF ;}
+        table.type-01 td:first-child {background-color: #E6EFFF ; }
+        .evt-click-profile{ cursor: pointer; }
+        .evt-click-profile:hover{ background: #b4baba; }
+        .testMem { background: #bdf7bc; }
+        .text-blue { color: #007bff !important; }
+        .text-amt { color: #ee5524 !important; }
+        .text-exity { color: #b4baba !important; }
+
+    </style>
+</head>
+<th:block th:replace="fragments/head :: headFragment"></th:block>
+<body>
+<div layout:fragment="content">
+    <th:block th:include="/fragments/contentHeader :: setHeaderData(${parentTabName}, ${childTabName}, true)"></th:block>
+    <div class="tab-content">
+        <th:block th:include="fragments/tabMenu :: tabmenuFragment"></th:block>
+    </div>
+    <!--<th:block th:include="------/fragment/searchArea ::SearchArea"></th:block>-->
+    <form id="srchForm" name="srch" action="/------/profile" method="get">
+
+        <input type="hidden" name="orderSlct" id="orderSlct" value="a">
+        <div class="container-fluid container-yby px-2 mb-2">
+            <div class="row align-items-center">
+                <div class="col-auto">
+                    <div class="input-group">
+                        <label for="idinput" class="control-label my-auto mr-1">아이디</label>
+                        <input type="text" class="form-control" id="idinput" name="memId"
+                               placeholder="아이디" th:value="${paramMap['memId']}" onkeydown="if(13===event.keyCode) submit();">
+                        <span class="input-group-append">
+                            <button type="button" class="btn btn-adminDefaultBtn btn-flat" onclick="$('#ordSlct').val(''); submit();">검색</button>
+                    </span>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <div class="row justify-content-center">
+                        <div class="btn-group">
+                            <a class="btn btn-adminDefaultBtn" href="javascript:void(0);" id="btn-prev">이전</a>
+                            <div>
+                                <input id="calendar" name="tDate" placeholder="검색일"
+                                       class="form-control text-center text-bold mbsc-comp" type="text" readonly="" th:value="${paramMap['tDate']}">
+                            </div>
+                            <a class="btn btn-adminDefaultBtn" href="javascript:void(0);" id="btn-next">다음</a>
+                            <a class="btn btn-outline-adminDefaultBtn" href="javascript:void(0);" id="btn-today">오늘</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <div class="text-bold">
+                        [ 검색결과 : [[${#numbers.formatInteger( data['total_num']?:0, 1,'COMMA') }]]  건 ]
+                        [ 열람권수 : [[${#numbers.formatInteger( data['total_item_num']?:0, 1,'COMMA') }]]  건 ]
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <!--<th:block th:include="------/fragment/totalInfoArea :: TotalInfoArea"></th:block>-->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col">
+                <table class="table table-info-yby no-border">
+                    <tbody>
+                    <tr>
+                        <td class="text-bold">
+                            ※ 구분 : 아이템 사용 및 무료사용 여부
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="col">
+                <span class="text-center border border-dark p-1 testMem"
+                      style="margin-left: 50px"> 테스트 계정
+                </span>
+            </div>
+
+            <div class="col">
+                <table class="table table-bordered text-center table-valign-middle table-striped type-01">
+                    <colgroup>
+                        <col style="width:100px; min-width: 41px;">
+                        <col style="width:100px;">
+                        <col style="width:100px;">
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th>구분</th>
+                        <th>남->여</th>
+                        <th>여->남</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>전체열람 무료</td>
+                        <td>[[${ #numbers.formatInteger( data['pfViewStat']['fmfCnt']?:0  , 1, 'COMMA') }]]</td>
+                        <td>[[${ #numbers.formatInteger( data['pfViewStat']['ffmCnt']?:0  , 1, 'COMMA') }]]</td>
+                    </tr>
+                    <tr>
+                        <td>전체열람 유료</td>
+                        <td>[[${ #numbers.formatInteger( data['pfViewStat']['imfCnt']?:0  , 1, 'COMMA') }]]</td>
+                        <td>[[${ #numbers.formatInteger( data['pfViewStat']['ifmCnt']?:0  , 1, 'COMMA') }]]</td>
+                    </tr>
+                    <tr>
+                        <td>기본 열람</td>
+                        <td>[[${ #numbers.formatInteger( data['pfViewStat']['vmfCnt']?:0  , 1, 'COMMA') }]]</td>
+                        <td>[[${ #numbers.formatInteger( data['pfViewStat']['vfmCnt']?:0  , 1, 'COMMA') }]]</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <!---->
+    <div class="w-100 text-center mt-2 mb-2" style="position: relative; display:flex;">
+        <div style="width: 170px;">
+            <button class="btn btn-adminDefaultBtn" th:classappend="${paramMap['orderSlct'] == 'a' ? 'active' :'' }"
+                    onclick="$('form[name=srch]')[0].orderSlct.value = 'a'; $('form[name=srch]')[0].submit()">최근순</button>
+            <button class="btn btn-adminDefaultBtn" th:classappend="${paramMap['orderSlct'] == 'b' ? 'active' :'' }"
+                    onclick="$('form[name=srch]')[0].orderSlct.value = 'b'; $('form[name=srch]')[0].submit()">과거순</button>
+        </div>
+        <div style="margin:0 auto; padding-right: 85px;">
+            <th:block th:replace="fragments/paginations :: paginations"></th:block>
+        </div>
+    </div>
+
+    <!--<th:block th:include="------/fragment/dataListArea ::DataListArea"></th:block>-->
+    <table class="table table-bordered text-center table-valign-middle table-striped type-01" >
+        <colgroup>
+            <col style="width:85px;">
+
+            <col style="width:50px;">
+            <col style="width:140px;">
+            <col style="width:100px;">
+            <col style="width:47px;">
+            <col style="width:50px;">
+            <col style="width:47px;">
+
+            <col style="width:140px;">
+            <col style="width:100px;">
+            <col style="width:47px;">
+            <col style="width:50px;">
+            <col style="width:47px;">
+
+            <col style="width:120px;">
+        </colgroup>
+        <thead>
+        <tr align="center" class="title">
+            <th>구분</th>
+            <th>열람권수</th>
+            <th>열람회원</th>
+            <th>대화명</th>
+            <th>나이</th>
+            <th>지역</th>
+            <th>열람<br>횟수</th>
+
+            <th>열람대상회원</th>
+            <th>상대<br>대화명</th>
+            <th>상대<br>나이</th>
+            <th>상대<br>지역</th>
+            <th>열람<br>받은횟수</th>
+            <th>열람일자</th>
+        </tr>
+        </thead>
+        <th:block th:each="row, rowstat :${data['list']}">
+            <tr>
+                <td th:classappend="${row['openSlct']=='i'?'text-amt':''}"
+                    th:text="${row['openSlct']=='i'?'전체열람(유료)':(row['openSlct']=='f'?'전체열람(무료)':'기본열람')}">
+                </td>
+
+                <td th:text="${row['viewItemTotCnt']}"></td>
+
+                <td th:class="| evt-click-profile ${row['chrgrYn']=='y'?'testMem':''}|"
+                    th:classappend="${row['exitYn']=='y'?'text-exity':(row['memSex']=='f'?'text-amt':'text-blue' )}"
+                    th:data-memno="${row['memNo']}" th:data-memid="${row['memId']}" th:data-memslct="x" th:data-divyn="n">
+                    <th:block th:insert="~{::memSlctArr(${row['memSlct']})}"></th:block>
+                    <span>[[${ row['memId'] }]]</span>
+                    <span>[[${ (row['exitYn']=='y')?' (탈퇴)':'' }]]</span>
+                </td>
+
+                <td th:class="evt-click-profile"
+                    th:classappend="${row['exitYn']=='y'?'text-exity':(row['memSex']=='f'?'text-amt':'text-blue' )}"
+                    th:data-memno="${row['memNo']}" th:data-memid="${row['memId']}" th:data-memslct="x" th:data-divyn="n">
+                    [[${row['mateNick']}]]
+                </td>
+
+                <td>[[${thisYear}-${row['memBirthYear']}+1]]</td>
+
+                <td>[[${@commonCodeComponent.getOneByIdAndCode('hometown', row['memLoc']).codeName }]]</td>
+
+                <td th:text="${row['memVisitTotCnt']}"></td>
+
+                <td th:class="| evt-click-profile ${row['ptrChrgrYn']=='y'?'testMem':''}|"
+                    th:classappend="${row['ptrExitYn']=='y'?'text-exity':(row['ptrMemSex']=='f'?'text-amt':'text-blue' )}"
+                    th:data-memno="${row['ptrMemNo']}" th:data-memid="${row['ptrMemId']}" th:data-memslct="x" th:data-divyn="n">
+                    <th:block th:insert="~{::memSlctArr(${row['ptrMemSlct']})}"></th:block>
+                    <span>[[${ row['ptrMemId'] }]]</span>
+                    <span>[[${ (row['ptrExitYn']=='y')?' (탈퇴)':'' }]]</span>
+                </td>
+
+                <td th:class="evt-click-profile"
+                    th:classappend="${row['ptrExitYn']=='y'?'text-exity':(row['ptrMemSex']=='f'?'text-amt':'text-blue' )}"
+                    th:data-memno="${row['ptrMemNo']}" th:data-memid="${row['ptrMemId']}" th:data-memslct="x" th:data-divyn="n">
+                    [[${row['ptrMateNick']}]]
+                </td>
+
+                <td>[[${thisYear}-${row['ptrMemBirthYear']}+1]]</td>
+
+                <td>[[${@commonCodeComponent.getOneByIdAndCode('hometown', row['ptrMemLoc']).codeName }]]</td>
+
+                <td th:text="${row['ptrVisitTotCnt']}"></td>
+
+                <td>[[${ #strings.substring( row['openDate'] ,0,19) }]]</td>
+
+            </tr>
+        </th:block>
+    </table>
+    <div style="margin:0 auto; padding-right: 85px;">
+        <th:block th:replace="fragments/paginations :: paginations"></th:block>
+    </div>
+    <!-------------------- fragment -------------------->
+
+
+    <section layout:fragment="contentScriptFragment">
+        <script type="text/javascript" th:src="${@versionComponent.getVersion('/build/profile.bundle.js')}"></script>
+    </section>
+
+</div>
+</body>
+</html>

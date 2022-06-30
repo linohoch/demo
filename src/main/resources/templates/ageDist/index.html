@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layouts/layoutContents.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        thead {background-color: #E6EFFF}
+        td:first-child {width: 120px}
+        /*td {width: 75px}*/
+        .slcted {background-color:#f1f1f1; box-shadow: inset 1px 1px 3px #d7d7d7}
+        .slct_local:hover {background-color:#f7f7f7}
+        .age30 {background-color:#fceee8}
+        .age40 {background-color:#fcfbeb}
+        .age50 {background-color:#f8fbff}
+        .text-blue { color: #007bff !important; }
+        .text-amt { color: #ee5524 !important; }
+    </style>
+</head>
+<body>
+<div layout:fragment="content">
+    <th:block th:include="fragments/contentHeader ::setHeader(true)"></th:block>
+
+    <div class="tableArea"></div>
+
+    <section layout:fragment="contentScriptFragment">
+        <script type="text/javascript" th:src="${@versionComponent.getVersion('/build/AgeDist.bundle.js')}"></script>
+    </section>
+</div>
+</body>
+</html>

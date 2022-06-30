@@ -1,0 +1,135 @@
+{{ if error === 'n' }}
+<input type="hidden" value="{{error}}">
+<div>
+    <div class="localDistInfo">
+        <table id="localDistTable" class="table table-bordered text-center" style="width: 1400px">
+            <thead>
+            <tr>
+                <td {{ set sum = 0 }}>
+                    전국
+                </td>
+                {{ each localDist }}
+                <td {{ sum+=$value.cnt }}>
+                    {{ $value.mem_loc_name }}
+                </td>
+                {{ /each }}
+            </tr>
+            </thead>
+            <tbody>
+            <td role="button" class="slct_local" data-loc=" ">
+                {{sum}}
+            </td>
+            {{ each localDist }}
+            <td role="button" class="slct_local" data-loc="{{$value.mem_loc}}">
+                {{ $value.cnt }}
+            </td>
+            {{ /each }}
+            </tbody>
+        </table>
+    </div>
+
+
+    <div class="ageDistInfo" style="justify-content: space-between; width: 1400px">
+        <table class="table table-bordered text-center" style="width:195px">
+            <tr>
+                <td>남성 총 프로필</td>
+                <td class="text-blue">{{ mTotal }}</td>
+            </tr>
+            <tr>
+                <td>여성 총 프로필</td>
+                <td class="text-amt">{{ fTotal }}</td>
+            </tr>
+        </table>
+
+
+        <div class="row">
+            <div class="col">
+                <table id="mMatchDist" class="table-bordered table-valign-middle text-center" style="width: 360px">
+                    <thead>
+                    <tr>
+                        <th colspan="3" class="text-center">
+                            남성
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>나이</th>
+                        <th>등록자수</th>
+                        <th>매칭 가능<br>여성회원 수</th>
+                    </tr>
+                    </thead>
+                    {{ each mList }}
+                    <tr class="{{$value.memAge>49? 'age50': $value.memAge>39? 'age40' : $value.memAge>29? 'age30': '' }}">
+                        <td>{{ $value.memAge }}세</td>
+                        <td>{{ $value.cnt }}
+                            {{ if $value.cnt == 0 || mTotal == 0 }}
+                            (<b>0</b>%)
+                            {{else}}
+                            {{ set ratio = $value.cnt / mTotal * 100}}
+                            (<span {{ ratio>=10? 'style=color:red':'' }}><b>{{ ratio | numberPointToFixedTo }}</b>%</span>)
+                            {{ /if }}
+                        </td>
+                        <td>{{ $value.matchCnt }}
+                            {{ if $value.matchCnt == 0 || fTotal == 0 }}
+                            (<b>0</b>%)
+                            {{else}}
+                            {{ set ratio = $value.matchCnt / fTotal * 100}}
+                            (<span {{ ratio>=10? 'style=color:red':'' }}><b>{{ ratio | numberPointToFixedTo }}</b>%</span>)
+                            {{ /if }}
+                        </td>
+                    </tr>
+                    {{ /each }}
+                </table>
+            </div>
+            <div class="col">
+                <table id="fMatchDist" class="table-bordered table-valign-middle text-center" style="width: 375px">
+                    <thead>
+                    <tr>
+                        <th colspan="3" class="text-center">
+                            여성
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>나이</th>
+                        <th>등록자수</th>
+                        <th>매칭 가능<br>남성회원 수</th>
+                    </tr>
+                    </thead>
+                    {{ each fList }}
+                    <tr class="{{$value.memAge>49? 'age50': $value.memAge>39? 'age40' : $value.memAge>29? 'age30': '' }}">
+                        <td>{{ $value.memAge }}세</td>
+                        <td>{{ $value.cnt }}
+                            {{ if $value.cnt == 0 || fTotal == 0 }}
+                            (<b>0</b>%)
+                            {{else}}
+                            {{ set ratio = $value.cnt / fTotal * 100}}
+                            (<span {{ ratio>=10? 'style=color:red':'' }}><b>{{ ratio | numberPointToFixedTo }}</b>%</span>)
+                            {{ /if }}
+                        </td>
+                        <td>{{ $value.matchCnt }}
+                            {{ if $value.matchCnt == 0 }}
+                            (<b>0</b>%)
+                            {{ else }}
+                            {{ set ratio = $value.matchCnt / mTotal * 100}}
+                            (<span {{ ratio>=10? 'style=color:red':'' }}><b>{{ ratio | numberPointToFixedTo }}</b>%</span>)
+                            {{ /if }}
+                        </td>
+                    </tr>
+                    {{ /each }}
+
+                </table>
+            </div>
+            <div class="col">
+                <div class="table no-border">
+                    - 나이 80세 이상은 80세에 합산<br>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+    </div>
+</div>
+{{ else }}
+<div>
+    Error
+</div>
+{{ /if }}
